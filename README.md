@@ -1,0 +1,2 @@
+# Katas
+Code katas
