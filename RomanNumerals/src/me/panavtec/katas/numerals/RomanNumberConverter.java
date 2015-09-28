@@ -31,7 +31,7 @@ public class RomanNumberConverter {
           resultSymbol.append(upper.getSymbol());
         } else {
           RomanSymbol prevSubstract = previousSubstractSymbol(upper);
-          int substraction = upper.getValue() - (prevSubstract != null ? prevSubstract.getValue() : 0);
+          int substraction = upper.getValue() - prevSubstract.getValue();
           if (decimalNumber >= substraction) {
             decimalNumber -= substraction;
             resultSymbol.append(prevSubstract.getSymbol()).append(upper.getSymbol());
@@ -59,7 +59,7 @@ public class RomanNumberConverter {
 
   private RomanSymbol previousSubstractSymbol(RomanSymbol upper) {
     int index = symbols.indexOf(upper) - (upper.isTypeFive() ? 1 : 2);
-    return index >= 0 ? symbols.get(index) : null;
+    return index >= 0 ? symbols.get(index) : new RomanSymbol("", 0);
   }
 
   private RomanSymbol upperSymbolToNumber(int decimalNumber) {
