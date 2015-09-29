@@ -18,42 +18,36 @@ public class RomanNumberConverter {
     symbols.add(new RomanSymbol('M', 1000));
   }
 
-  public String convert(int decimalNumber) {
-    StringBuilder resultSymbol = new StringBuilder();
-    while (decimalNumber > 0) {
-      RomanSymbol exactValue = isExactValue(decimalNumber);
+  public String convert(int providedArabic) {
+    ResultNumber resultNumber = new ResultNumber(providedArabic);
+    while (resultNumber.getRestant() > 0) {
+      RomanSymbol exactValue = isExactValue(resultNumber.getRestant());
       if (exactValue != null) {
-        decimalNumber -= exactValue.getValue();
-        resultSymbol.append(exactValue.getSymbol());
+        resultNumber.appendSymbol(exactValue);
       } else {
-        RomanSymbol upper = romanGreaterThan(decimalNumber);
-        if (decimalNumber > upper.getValue()) {
-          decimalNumber -= upper.getValue();
-          resultSymbol.append(upper.getSymbol());
+        RomanSymbol upper = romanGreaterThan(resultNumber.getRestant());
+        if (resultNumber.getRestant() > upper.getValue()) {
+          resultNumber.appendSymbol(upper);
         } else {
           RomanSymbol prevSubstract = previousSubstractable(upper);
           int substraction = upper.getValue() - prevSubstract.getValue();
-          if (decimalNumber >= substraction) {
-            decimalNumber -= substraction;
-            resultSymbol.append(prevSubstract.getSymbol()).append(upper.getSymbol());
-          } else if (upper.getValue() > decimalNumber) {
-            RomanSymbol realPrevious = symbols.get(symbols.indexOf(upper) - 1);
-            if (realPrevious.getValue() <= decimalNumber) {
-              decimalNumber -= realPrevious.getValue();
-              resultSymbol.append(realPrevious.getSymbol());
+          if (resultNumber.getRestant() >= substraction) {
+            resultNumber.appendSymbol(substraction, prevSubstract.getSymbol(), upper.getSymbol());
+          } else if (upper.getValue() > resultNumber.getRestant()) {
+            RomanSymbol previosSymbol = symbols.get(symbols.indexOf(upper) - 1);
+            if (previosSymbol.getValue() <= resultNumber.getRestant()) {
+              resultNumber.appendSymbol(previosSymbol);
             } else {
-              decimalNumber -= prevSubstract.getValue();
-              resultSymbol.append(prevSubstract.getSymbol());
+              resultNumber.appendSymbol(prevSubstract);
             }
           } else {
-            decimalNumber -= upper.getValue();
-            resultSymbol.append(upper.getSymbol());
+            resultNumber.appendSymbol(upper);
           }
         }
       }
     }
 
-    return resultSymbol.toString();
+    return resultNumber.getComposedSymbol();
   }
 
   private RomanSymbol previousSubstractable(RomanSymbol upper) {
