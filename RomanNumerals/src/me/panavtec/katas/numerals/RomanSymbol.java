@@ -1,19 +1,19 @@
 package me.panavtec.katas.numerals;
 
 public class RomanSymbol {
-  private String symbol;
+  private char symbol;
   private int value;
 
-  public RomanSymbol(String symbol, int value) {
+  public RomanSymbol(char symbol, int value) {
     this.symbol = symbol;
     this.value = value;
   }
 
-  public String getSymbol() {
+  public char getSymbol() {
     return symbol;
   }
 
-  public void setSymbol(String symbol) {
+  public void setSymbol(char symbol) {
     this.symbol = symbol;
   }
 
@@ -25,19 +25,11 @@ public class RomanSymbol {
     this.value = value;
   }
 
-  public boolean isTypeOne() {
-    return Integer.toString(value).charAt(0) == '1';
-  }
-
   public boolean isTypeFive() {
-    return Integer.toString(value).charAt(0) == '5';
+    return value / (5 * Math.pow(10, (int) Math.log10(value))) == 1d;
   }
 
   public boolean hasValue() {
     return value > 0;
-  }
-
-  @Override public String toString() {
-    return symbol;
   }
 }
