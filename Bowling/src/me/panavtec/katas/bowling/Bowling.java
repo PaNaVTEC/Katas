@@ -32,7 +32,7 @@ public class Bowling {
           index++;
           if (isLastBall(index + 1)) index++;
         } else {
-          finalScore += numericRoll(index);
+          finalScore += numericValue(index);
         }
       }
     }
@@ -44,7 +44,7 @@ public class Bowling {
     if (isStrike(index + 2)) {
       finalScore += 10;
     } else if (isScoringRoll(index + 2)) {
-      finalScore += numericRoll(index + 2);
+      finalScore += numericValue(index + 2);
     }
     return finalScore;
   }
@@ -52,27 +52,27 @@ public class Bowling {
   private int strike(int index) {
     int finalScore = 10;
 
-    if (index + 2 < rolls.length - 1) {
-      if (isSpare(index + 2)) {
+    if (!isLastBall(index + 1)) {
+      if (isStrike(index + 2)) {
         finalScore += 10;
-      } else if (isScoringRoll(index + 2) && rolls[index + 2] != '/' && rolls[index + 2] != 'X') {
-        finalScore += numericRoll(index + 2);
-      }
-    }
-
-    if (index + 1 < rolls.length - 1 && isStrike(index + 2)) {
-      finalScore += 10;
-      if (index + 2 < rolls.length - 1 && isStrike(index + 4) && !isLastBall(index)) {
+        if (!isLastBall(index + 2)) {
+          if (isStrike(index + 4)) {
+            finalScore += 10;
+          } else if (isNumeric(index + 4)) {
+            finalScore += numericValue(index + 4);
+          }
+        }
+      } else if (isSpare(index + 2)) {
         finalScore += 10;
-      } else if (index + 2 < rolls.length - 1 && rolls[index + 4] != '-') {
-        finalScore += numericRoll(index + 4);
+      } else if (isNumeric(index + 2)) {
+        finalScore += numericValue(index + 2);
       }
     }
 
     return finalScore;
   }
 
-  private int numericRoll(int index) {
+  private int numericValue(int index) {
     return Character.getNumericValue(rolls[index]);
   }
 
@@ -89,6 +89,10 @@ public class Bowling {
   }
 
   private boolean isScoringRoll(int index) {
-    return rolls[index] != '-' &&  rolls[index] != '/';
+    return rolls[index] != '-' && rolls[index] != '/';
+  }
+
+  private boolean isNumeric(int index) {
+    return isScoringRoll(index) && rolls[index] != '/' && !isStrike(index);
   }
 }
