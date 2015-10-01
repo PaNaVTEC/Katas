@@ -46,12 +46,12 @@ public class ScoreCalculator {
     int finalScore = STRIKE_SCORE;
 
     int nextFrame = index + 2;
-    if (nextFrame < rolls.length) {
+    if (nextFrame < rolls.length && strikeCount < MAX_STRIKE_COUNT) {
       if (isStrike(nextFrame)) {
-        finalScore += strikeCount < MAX_STRIKE_COUNT ? strike(nextFrame, ++strikeCount) : 0;
+        finalScore += strike(nextFrame, ++strikeCount);
       } else if (strikeCount < MAX_STRIKE_COUNT - 1 && isSpare(nextFrame)) {
-        finalScore += 10;
-      } else if (strikeCount < MAX_STRIKE_COUNT && isNumeric(nextFrame)) {
+        finalScore += SPARE_SCORE;
+      } else if (isNumeric(nextFrame)) {
         finalScore += numericValue(nextFrame);
       }
     }
