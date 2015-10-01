@@ -4,11 +4,17 @@ import java.util.Arrays;
 
 public class Bowling {
 
-  private char[] rolls = new char[21];
+  private final static char SPARE = '/';
+  private final static char STRIKE = 'X';
+  private final static char GUTTER = '-';
+  private final static int MAX_STRIKE_COUNT = 3;
+  private final static int STRIKE_SCORE = 10, SPARE_SCORE = 10;
+  private final static char[] rolls = new char[21];
+
   private int currentIndex = 0;
 
   public Bowling() {
-    Arrays.fill(rolls, '-');
+    Arrays.fill(rolls, GUTTER);
   }
 
   public void roll(char roll) {
@@ -22,16 +28,13 @@ public class Bowling {
 
   public int calculateScore() {
     int finalScore = 0;
-    for (int index = 0; index < rolls.length; index++) {
+    for (int index = 0; index < rolls.length - 1; index++) {
       if (isScoringRoll(index)) {
         if (isStrike(index)) {
           finalScore += strike(index);
-          if (isLastBall(index + 1)) index++;
         } else if (isSpare(index)) {
           finalScore += spare(index);
-          index++;
-          if (isLastBall(index + 1)) index++;
-        } else {
+        } else if (isNumeric(index)) {
           finalScore += numericValue(index);
         }
       }
@@ -40,32 +43,33 @@ public class Bowling {
   }
 
   private int spare(int index) {
-    int finalScore = 10;
-    if (isStrike(index + 2)) {
-      finalScore += 10;
-    } else if (isScoringRoll(index + 2)) {
-      finalScore += numericValue(index + 2);
+    int finalScore = SPARE_SCORE;
+    int nextFrame = index + 2;
+    if (isStrike(nextFrame)) {
+      finalScore += STRIKE_SCORE;
+    } else if (isScoringRoll(nextFrame)) {
+      finalScore += numericValue(nextFrame);
     }
     return finalScore;
   }
 
   private int strike(int index) {
-    int finalScore = 10;
+    return strike(index, 1);
+  }
 
-    if (!isLastBall(index + 1)) {
-      if (isStrike(index + 2)) {
-        finalScore += 10;
-        if (!isLastBall(index + 2)) {
-          if (isStrike(index + 4)) {
-            finalScore += 10;
-          } else if (isNumeric(index + 4)) {
-            finalScore += numericValue(index + 4);
-          }
+  private int strike(int index, int strikeCount) {
+    int finalScore = STRIKE_SCORE;
+
+    int nextFrame = index + 2;
+    if (nextFrame < rolls.length) {
+      if (isStrike(nextFrame)) {
+        finalScore += strikeCount < MAX_STRIKE_COUNT ? strike(nextFrame, ++strikeCount) : 0;
+      } else if (strikeCount < MAX_STRIKE_COUNT) {
+        if (strikeCount < 2 && isSpare(nextFrame)) {
+          finalScore += 10;
+        } else if (isNumeric(nextFrame)) {
+          finalScore += numericValue(nextFrame);
         }
-      } else if (isSpare(index + 2)) {
-        finalScore += 10;
-      } else if (isNumeric(index + 2)) {
-        finalScore += numericValue(index + 2);
       }
     }
 
@@ -77,11 +81,11 @@ public class Bowling {
   }
 
   private boolean isSpare(int index) {
-    return !isLastBall(index) && rolls[index + 1] == '/';
+    return !isLastBall(index) && rolls[index + 1] == SPARE;
   }
 
   private boolean isStrike(int index) {
-    return rolls[index] == 'X';
+    return rolls[index] == STRIKE;
   }
 
   private boolean isLastBall(int index) {
@@ -89,10 +93,10 @@ public class Bowling {
   }
 
   private boolean isScoringRoll(int index) {
-    return rolls[index] != '-' && rolls[index] != '/';
+    return rolls[index] != GUTTER && rolls[index] != SPARE;
   }
 
   private boolean isNumeric(int index) {
-    return isScoringRoll(index) && rolls[index] != '/' && !isStrike(index);
+    return isScoringRoll(index) && rolls[index] != SPARE && !isStrike(index);
   }
 }

@@ -110,6 +110,21 @@ public class BowlingTest {
     Assert.assertEquals("Unexpected score", 60, bowling.calculateScore());
   }
 
+  @Test public void turkeyThenNumeric() {
+    Bowling bowling = new Bowling();
+    bowling.roll('X', '-');
+    bowling.roll('X', '-');
+    bowling.roll('X', '-');
+    bowling.roll('5', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    Assert.assertEquals("Unexpected score", 75, bowling.calculateScore());
+  }
+
   @Test public void perfectGame() {
     Bowling bowling = new Bowling();
     bowling.roll('X', '-');
@@ -200,6 +215,21 @@ public class BowlingTest {
     bowling.roll('-', '-');
     bowling.roll('-', '-');
     Assert.assertEquals("Unexpected score", 45, bowling.calculateScore());
+  }
+
+  @Test public void twoStrikesFollowSpare() {
+    Bowling bowling = new Bowling();
+    bowling.roll('X', '-');
+    bowling.roll('X', '-');
+    bowling.roll('5', '/');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    bowling.roll('-', '-');
+    Assert.assertEquals("Unexpected score", 55, bowling.calculateScore());
   }
 
   @Test public void spareAndStrike() {
