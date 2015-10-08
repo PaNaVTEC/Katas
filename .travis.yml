@@ -5,4 +5,4 @@ env:
   - KATA_DIR=Bowling
   - KATA_DIR=GameOfLife
   - KATA_DIR=RomanNumerals
-script: cd $KATA_DIR && ./gradlew test
+script: cd $KATA_DIR && gradle check
