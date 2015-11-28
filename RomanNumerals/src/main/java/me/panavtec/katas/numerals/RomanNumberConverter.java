@@ -19,15 +19,11 @@ public class RomanNumberConverter {
           int substraction = upper.getValue() - prevSubstract.getValue();
           if (resultNumeral.getRestant() >= substraction) {
             resultNumeral.appendSymbol(substraction, prevSubstract.getSymbol(), upper.getSymbol());
-          } else if (upper.getValue() > resultNumeral.getRestant()) {
+          } else {
             RomanNumeral previousSymbol = numerals[RomanNumeral.indexOf(upper) - 1];
             if (previousSymbol.getValue() <= resultNumeral.getRestant()) {
               resultNumeral.appendSymbol(previousSymbol);
-            } else {
-              resultNumeral.appendSymbol(prevSubstract);
             }
-          } else {
-            resultNumeral.appendSymbol(upper);
           }
         }
       }

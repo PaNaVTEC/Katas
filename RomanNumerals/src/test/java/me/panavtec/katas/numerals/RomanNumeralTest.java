@@ -94,4 +94,9 @@ public class RomanNumeralTest {
     Assert.assertEquals("Unexpected number", "MCMXC", converter.convert(1990));
   }
 
+  @Test public void convert1999_shouldGiveMCMXCIX() {
+    RomanNumberConverter converter = new RomanNumberConverter();
+    Assert.assertEquals("Unexpected number", "MCMXCIX", converter.convert(1999));
+  }
+
 }
