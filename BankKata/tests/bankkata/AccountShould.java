@@ -2,25 +2,21 @@ package bankkata;
 
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AccountShould {
+@RunWith(MockitoJUnitRunner.class) public class AccountShould {
 
   public static final List<Transaction> TRANSACTIONS =
       Collections.singletonList(new Transaction("22/10/15", 123));
   @Mock TransactionRepository repository;
   @Mock Clock clock;
   @Mock StatementPrinter statementPrinter;
-
-  @Before public void setup() {
-    MockitoAnnotations.initMocks(this);
-  }
 
   @Test public void store_deposit_transaction() {
     Account account = new Account(repository, clock, statementPrinter);

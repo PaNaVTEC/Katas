@@ -22,7 +22,8 @@ public class StatementPrinter {
     int currentBalance = calculateBalance(transactions);
     for (int i = transactions.size() - 1; i >= 0; i--) {
       Transaction transaction = transactions.get(i);
-      console.print(String.format("%s | %d | %d", transaction.getDate(), transaction.getAmount(), currentBalance));
+      console.print(String.format("%s | %d | %d", transaction.getDate(), transaction.getAmount(),
+          currentBalance));
       currentBalance -= transaction.getAmount();
     }
   }

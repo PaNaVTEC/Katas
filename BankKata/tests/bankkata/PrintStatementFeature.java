@@ -1,11 +1,12 @@
 package bankkata;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /*
@@ -19,12 +20,14 @@ import static org.mockito.Mockito.when;
  13/01/2012 || 2000.00 ||        || 3000.00
  10/01/2012 || 1000.00 ||        || 1000.00
  */
-public class PrintStatementFeature {
+@RunWith(MockitoJUnitRunner.class) public class PrintStatementFeature {
+
+  @Mock Clock clock;
+  @Mock Console console;
+
   @Test public void print_statement_containing_all_transactions() {
     TransactionRepository repository = new TransactionRepository();
-    Clock clock = Mockito.mock(Clock.class);
     when(clock.today()).thenReturn("10/01/2012", "13/01/2012", "14/01/2012");
-    Console console = mock(Console.class);
     StatementPrinter statementPrinter = new StatementPrinter(console);
     Account account = new Account(repository, clock, statementPrinter);
     account.deposit(1000);

@@ -2,20 +2,16 @@ package bankkata;
 
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.inOrder;
 
-public class StatePrinterShould {
+@RunWith(MockitoJUnitRunner.class) public class StatePrinterShould {
   @Mock Console console;
-
-  @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-  }
 
   @Test public void should_print_all_transactions() throws Exception {
     List<Transaction> transactions =
