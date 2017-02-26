@@ -12,6 +12,9 @@ object Main {
   type Board = (Row[Top], Row[Middle], Row[Bottom])
 
   object Board {
+
+    def asString(board: Board): String = Row.asString(board._1) + "\n" + Row.asString(board._2) + "\n" + Row.asString(board._3)
+
     def hasPlayerWon(board: Board): Boolean = {
       def combination(c: Cell[_], c2: Cell[_], c3: Cell[_]): Boolean = List(c.mark, c2.mark, c3.mark).flatten.size == 3
 
@@ -71,6 +74,8 @@ object Main {
 
   object Row {
     def apply[A <: RowPosition](): Row[A] = (Cell[Left](None), Cell[Center](None), Cell[Right](None))
+
+    def asString(row: Row[_]): String = row._1.mark.getOrElse(" ") + " | " + row._2.mark.getOrElse(" ") + " | " + row._3.mark.getOrElse(" ")
   }
 
   sealed trait CellPosition
@@ -171,12 +176,11 @@ object Main {
   def turn(gameState: GameState)(implicit I: ConsoleOps[TicTacToeApp], D: TurnOps[TicTacToeApp]): Free[TicTacToeApp, GameState] = {
     import D._
     import I._
-
     for {
       _ <- printLn(s"Turn Of Player ${gameState._1}. Input next move [X,Y]:")
       coordinate <- readLn
       gameState <- playNext(gameState._2, (coordinate, gameState._1))
-      _ <- printLn(gameState.toString)
+      _ <- printLn(Board.asString(gameState._2))
     } yield gameState
   }
 
