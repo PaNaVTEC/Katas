@@ -53,8 +53,6 @@ object Main {
 
       row
     }
-
-
   }
 
   sealed trait RowPosition
@@ -127,12 +125,6 @@ object Main {
     def startGame: Free[F, GameState] = Free.inject(Start)
 
     def playNext(board: Board, playerInput: PlayerInput): Free[F, GameState] = Free.inject(PlayAt(board, playerInput))
-
-//    def hasWon(player: Player, board: Board): Free[F, Boolean] = Free.inject(HasWon(player, board))
-//
-//    def isBoardFull(board: Board): Free[F, Boolean] = Free.inject(IsBoardFull(board))
-//
-//    def finishGame: Free[F, GameState] = Free.inject(Finish)
   }
 
   object TurnOps {
@@ -188,14 +180,11 @@ object Main {
     } yield gameState
   }
 
-  def iterateUntilEnd(fa: Free[TicTacToeApp, GameState]): Free[TicTacToeApp, GameState] =
-    fa.flatMap(gs => {
-      if (Board.hasPlayerWon(gs._2)) Free.pure(gs)
-      else if (Board.isBoardFull(gs._2)) Free.pure(gs)
-      else iterateUntilEnd(turn(gs))
-    })
+  def iterateUntil(f: GameState => Boolean)(fa: Free[TicTacToeApp, GameState]): Free[TicTacToeApp, GameState] =
+    fa.flatMap(gs => if (f(gs)) Free.pure(gs) else iterateUntil(f)(turn(gs)))
 
-  def main(args: Array[String]): Unit = iterateUntilEnd(startTicTacToe).foldMap(interpreter)
+  def finishGame(gs: GameState): Boolean = Board.hasPlayerWon(gs._2) || Board.isBoardFull(gs._2)
 
-  //    startTicTacToe.flatMap(gs => iterateUntilEnd()).foldMap(interpreter)
+  def main(args: Array[String]): Unit = iterateUntil(finishGame)(startTicTacToe).foldMap(interpreter)
+
 }
