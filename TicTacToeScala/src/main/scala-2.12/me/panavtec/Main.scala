@@ -16,14 +16,16 @@ object Main {
     def asString(board: Board): String = Row.asString(board._1) + "\n" + Row.asString(board._2) + "\n" + Row.asString(board._3)
 
     def hasPlayerWon(board: Board): Boolean = {
-      def combination(c: Cell[_], c2: Cell[_], c3: Cell[_]): Boolean = List(c.mark, c2.mark, c3.mark).flatten.size == 3
+      def combination(c: Cell[_], c2: Cell[_], c3: Cell[_]): Boolean = {
+        val maybeMarks = List(c.mark, c2.mark, c3.mark)
+        maybeMarks.takeWhile(_.getOrElse(X) == O).size == 3 || maybeMarks.takeWhile(_.getOrElse(O) == X).size == 3
+      }
 
       board match {
         case
-          (
-            (l1, m1, t1),
-            (l2, m2, t2),
-            (l3, m3, t3)) =>
+          ((l1, m1, t1),
+          (l2, m2, t2),
+          (l3, m3, t3)) =>
           combination(l1, m1, t1) || combination(l2, m2, t2) || combination(l3, m3, t3) ||
             combination(l1, m2, t3) || combination(t1, m2, l3) || combination(l1, l2, l3) ||
             combination(m1, m2, m3) || combination(t1, t2, t3)
@@ -32,29 +34,25 @@ object Main {
     }
 
     def isBoardFull(board: Board): Boolean = board match {
-      case
-        (
-          (l1, m1, t1),
-          (l2, m2, t2),
-          (l3, m3, t3)) => List(l1.mark, m1.mark, t1.mark, l2.mark, m2.mark, t2.mark, l3.mark, m3.mark, t3.mark).flatten.size == 9
+      case (r1, r2, r3) =>
+        (r1.productIterator.toList ++ r2.productIterator.toList ++ r3.productIterator.toList)
+          .takeWhile(_.isInstanceOf[Some[_]]).size == 9
     }
 
     def apply(): Board = (Row[Top](), Row[Middle](), Row[Bottom]())
 
     def playAt(board: Board, coordinate: Coordinate, player: Player): Board = {
-      def col[R <: RowPosition](row: Row[R], cellPosition: CellPosition): Row[R] = (row, cellPosition) match {
+      def cellAt[R <: RowPosition](row: Row[R], cellPosition: CellPosition): Row[R] = (row, cellPosition) match {
         case ((_, c, r), Left()) => (Cell[Left](Some(player)), c, r)
         case ((l, _, r), Center()) => (l, Cell[Center](Some(player)), r)
         case ((l, c, _), Right()) => (l, c, Cell[Right](Some(player)))
       }
 
-      def row = (board, coordinate) match {
-        case ((top, mid, bot), (Top(), c)) => (col(top, c), mid, bot)
-        case ((top, mid, bot), (Middle(), c)) => (top, col(mid, c), bot)
-        case ((top, mid, bot), (Bottom(), c)) => (top, mid, col(bot, c))
+      (board, coordinate) match {
+        case ((top, mid, bot), (Top(), c)) => (cellAt(top, c), mid, bot)
+        case ((top, mid, bot), (Middle(), c)) => (top, cellAt(mid, c), bot)
+        case ((top, mid, bot), (Bottom(), c)) => (top, mid, cellAt(bot, c))
       }
-
-      row
     }
   }
 
