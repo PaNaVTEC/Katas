@@ -27,6 +27,6 @@ object Calculator extends RegexParsers {
 
 object calcmain {
   def main(args: Array[String]): Unit = {
-    println(Calculator("(1+1)*3+2/5"))
+    println(Calculator("3*3*3"))
   }
 }
