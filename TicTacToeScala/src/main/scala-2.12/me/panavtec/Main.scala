@@ -2,7 +2,8 @@ package me.panavtec
 
 import cats.data.Coproduct
 import cats.free.{Free, Inject}
-import cats.{Id, ~>}
+import cats.{Foldable, Id, ~>}
+import cats.syntax._
 
 import scala.io.StdIn
 import scala.util.matching.Regex
@@ -13,7 +14,8 @@ object Main {
 
   object Board {
 
-    def asString(board: Board): String = Row.asString(board._1) + "\n" + Row.asString(board._2) + "\n" + Row.asString(board._3)
+    def asString(board: Board): String =
+      Row.asString(board._1) + "\n" + Row.asString(board._2) + "\n" + Row.asString(board._3)
 
     def hasPlayerWon(board: Board): Boolean = {
       def combination(c: Cell[_], c2: Cell[_], c3: Cell[_]): Boolean = {
