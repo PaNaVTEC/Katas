@@ -94,7 +94,7 @@ object BooleanCalculator extends RegexParsers {
   def buildTree(input: String): Either[String, Expression] =
     parse(expression, input) match {
       case Success(result, _) => Right(result)
-      case NoSuccess(e) => Left(s"Error: $e._1 \nwhile parsing: $e._2")
+      case NoSuccess(e, i) => Left(s"Error: $e._1 \nwhile parsing: $e._2")
     }
 
   def evaluate(input: String): Either[String, Boolean] = buildTree(input).map(_.evaluate)
