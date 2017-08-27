@@ -43,7 +43,7 @@ object Main extends App {
       m <- get[Int]("Key")
     } yield n
 
-  def interpretedProgram: Option[Int] = program.foldMap(interpreter)
+  def interpretedProgram : Option[Int] = program.foldMap(interpreter)
 
   override def main(args: Array[String]): Unit = println(interpretedProgram)
 }

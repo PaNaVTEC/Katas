@@ -3,7 +3,7 @@ import cats.{~>, Id}
 
 object Interaction {
 
-  // DSL or Algebra
+  // DSL
   sealed trait Interaction[A]
   case object Ask extends Interaction[String]
   case class Tell(input: String) extends Interaction[Unit]
@@ -15,10 +15,10 @@ object Interaction {
   def tell(input: String): InteractionAlgebra[Unit] = Free.liftF(Tell(input))
 
   // Domain Logic
-  def yourBandIsShit: InteractionAlgebra[Unit] =
+  def program: InteractionAlgebra[Unit] =
     for {
       userMsg <- ask("Tell me your favourite artist")
-      _ <- tell(s"$userMsg is shit")
+      _ <- tell(s"$userMsg is mehhhhh")
     } yield ()
 
   // Interpretation of our program
@@ -29,5 +29,5 @@ object Interaction {
     }
   }
 
-  def main(args: Array[String]): Unit = yourBandIsShit.foldMap(interpreter)
+  def main(args: Array[String]): Unit = program.foldMap(interpreter)
 }
