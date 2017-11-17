@@ -2,18 +2,19 @@ module BankKata.BankAccount where
 
 import           BankKata.Natural
 import           Data.List
+import           Data.Time
 
-data Transaction = Deposit Nat | Withdraw Nat deriving (Show, Eq)
+data Transaction = Deposit Day Nat | Withdraw Day Nat deriving (Show, Eq)
 newtype BankAccount = BankAccount { getTransactions :: [Transaction] } deriving (Show, Eq)
 
 emptyAccount :: BankAccount
 emptyAccount = BankAccount []
 
-deposit :: Nat -> BankAccount -> BankAccount
-deposit = flip addTransaction . Deposit
+deposit :: Day -> Nat -> BankAccount -> BankAccount
+deposit date amount account = addTransaction account (Deposit date amount)
 
-withdraw :: Nat -> BankAccount -> BankAccount
-withdraw = flip addTransaction . Withdraw
+withdraw :: Day -> Nat -> BankAccount -> BankAccount
+withdraw date amount account = addTransaction account (Withdraw date amount)
 
 addTransaction :: BankAccount -> Transaction -> BankAccount
 addTransaction account transaction = BankAccount $ (getTransactions account) ++ [transaction]
@@ -21,7 +22,7 @@ addTransaction account transaction = BankAccount $ (getTransactions account) ++ 
 printStatement :: BankAccount -> String
 printStatement account = header ++ "\n" ++ statementLines
   where
-    header = " date | credit | debit | balance "
+    header = "  date | credit | debit | balance "
     statementLines = intercalate "\n" $ formatLine <$> zip (reverse transactions) (reverse (runningBalance transactions))
     transactions = getTransactions account
 
@@ -30,19 +31,26 @@ formatLine (tran, balance) =
   fdate tran ++ sep ++ fcredit tran ++ sep ++ fdebit tran ++ sep ++ fbalance balance ++ " "
   where
     sep = "|"
-    fdate tran = (rpad 5 "") ++ " "
-    fcredit (Deposit am)  = (rpad 8 ((format am) ++ " "))
-    fcredit (Withdraw am) = (rpad 8 "")
-    fdebit (Withdraw am) = (rpad 7 ((format am) ++ " "))
-    fdebit (Deposit am)  = (rpad 7 "")
+    fdate (Deposit day _)  = (rpad 7 ((formatDay day) ++ " "))
+    fdate (Withdraw day _) = (rpad 7 ((formatDay day) ++ " "))
+    fcredit (Deposit _ am) = (rpad 8 ((formatAmount am) ++ " "))
+    fcredit (Withdraw _ _) = (rpad 8 "")
+    fdebit (Withdraw _ am) = (rpad 7 ((formatAmount am) ++ " "))
+    fdebit (Deposit _ _)   = (rpad 7 "")
     fbalance balance = (rpad 8 (show balance))
-    format amount = show $ intValue amount
+
+formatAmount :: Nat -> String
+formatAmount nat = show $ intValue nat
+
+formatDay :: Day -> String
+formatDay date = (show d) ++ "-" ++ (show m)
+  where (y,m,d) = toGregorian date
 
 runningBalance :: [Transaction] -> [Int]
 runningBalance trans = drop 1 $ scanl (\b -> \a -> (amountOf a) + b) 0 trans
   where
-    amountOf (Deposit am)  = intValue am
-    amountOf (Withdraw am) = negate $ intValue am
+    amountOf (Deposit _ am)  = intValue am
+    amountOf (Withdraw _ am) = negate $ intValue am
 
 rpad :: Int -> String -> String
 rpad n s
