@@ -1,8 +1,0 @@
-language: java
-jdk:
-  - oraclejdk7
-env:
-  - KATA_DIR=Bowling
-  - KATA_DIR=GameOfLife
-  - KATA_DIR=RomanNumerals
-script: cd $KATA_DIR && gradle check
